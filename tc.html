@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <style>
+            .container {
+                display: flex;
+                flex-direction: column;
+                width: 300px;
+                margin: 0 auto;
+            }
+
+            .control {
+                background-image: linear-gradient(45deg, lightblue 10%, lightgreen 90%);
+            }
+
+            #result {
+                margin-top: 20px;
+                font-size: 18px;
+                text-align: center;
+            }
+
+            body {
+                background-image: linear-gradient(45deg, lightgreen 10%, lightblue 90%);
+            }
+        </style>
+        <title>Time Constant Calculator</title>
+    </head>
+    <body>
+        <div class="container">
+            <input class="control" type="number" id="resistance" placeholder="Resistance (Ohms)" style="width:300px; height: 50px;">
+            <select class="control" id="resistanceUnit" style="width:300px; height: 50px;">
+                <option value="1">Ohms</option>
+                <option value="1000">kOhm</option>
+                <option value="1000000">MOhm</option>
+                <option value="1000000000">GOhm</option>
+            </select>
+            <input class="control" type="number" id="capacitance" placeholder="Capacitance" style="width:300px; height: 50px;">
+            <select class="control" id="capacitanceUnit" style="width:300px; height: 50px;">
+                <option value="1">F</option>
+                <option value="0.001">mF</option>
+                <option value="0.000001">μF</option>
+                <option value="0.000000001">nF</option>
+                <option value="0.000000000001">pF</option>
+            </select>
+        </div>
+        <p id="result"></p>
+        <script>
+            const resistanceInput = document.getElementById('resistance');
+            resistanceInput.addEventListener('input', function() {
+                calculateTimeConstant();
+            });
+            const capacitanceInput = document.getElementById('capacitance');
+            capacitanceInput.addEventListener('input', function() {
+                calculateTimeConstant();
+            });
+            const resistanceUnitSelect = document.getElementById('resistanceUnit');
+            resistanceUnitSelect.addEventListener('change', function() {
+                calculateTimeConstant();
+            });
+            const capacitanceUnitSelect = document.getElementById('capacitanceUnit');
+            capacitanceUnitSelect.addEventListener('change', function() {
+                calculateTimeConstant();
+            });
+            const result = document.getElementById('result');
+            function calculateTimeConstant() {
+                if (document.getElementById('resistance').value === '' || document.getElementById('capacitance').value === '') {
+                    result.innerText = 'Please enter both resistance and capacitance values.';
+                    return;
+                }
+                let resistance = parseFloat(document.getElementById('resistance').value);
+                let capacitance = parseFloat(document.getElementById('capacitance').value);
+                let resistanceUnit = document.getElementById('resistanceUnit').value;
+                let capacitanceUnit = document.getElementById('capacitanceUnit').value;
+
+                resistance *= parseFloat(resistanceUnit);
+                capacitance *= parseFloat(capacitanceUnit);
+
+                let timeConstant = resistance * capacitance;
+                let displayValue;
+                let unit;
+
+                if (timeConstant >= 1e12) {
+                    displayValue = timeConstant / 1e12;
+                    unit = "Teraseconds";
+                } else if (timeConstant >= 1e9) {
+                    displayValue = timeConstant / 1e9;
+                    unit = "Gigaseconds";
+                } else if (timeConstant >= 1e6) {
+                    displayValue = timeConstant / 1e6;
+                    unit = "Megaseconds";
+                } else if (timeConstant >= 1e3) {
+                    displayValue = timeConstant / 1e3;
+                    unit = "Kiloseconds";
+                } else if (timeConstant >= 1) {
+                    displayValue = timeConstant;
+                    unit = "Seconds";
+                } else if (timeConstant >= 1e-3) {
+                    displayValue = timeConstant * 1e3;
+                    unit = "Milliseconds";
+                } else if (timeConstant >= 1e-6) {
+                    displayValue = timeConstant * 1e6;
+                    unit = "Microseconds";
+                } else if (timeConstant >= 1e-9) {
+                    displayValue = timeConstant * 1e9;
+                    unit = "Nanoseconds";
+                } else if (timeConstant >= 1e-12) {
+                    displayValue = timeConstant * 1e12;
+                    unit = "Picoseconds";
+                } else {
+                    displayValue = timeConstant;
+                    unit = "Seconds";
+                }
+
+                result.innerText = `The time constant is: ${displayValue} ${unit}.`;
+            }
+        </script>
+    </body>
+</html>
