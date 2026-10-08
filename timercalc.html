@@ -2,6 +2,23 @@
     <head>
         <link rel="icon" type="image/png" href="./calc.png">
         <style>
+            .container {
+                display: flex;
+                flex-direction: column;
+                width: 300px;
+                margin: 0 auto;
+            }
+
+            .control {
+                background-image: linear-gradient(45deg, lightblue 10%, lightgreen 90%);
+            }
+
+            #result {
+                margin-top: 20px;
+                font-size: 18px;
+                text-align: center;
+            }
+
             body {
                 background-image: linear-gradient(45deg, lightgreen 10%, lightblue 90%);
             }
@@ -10,14 +27,14 @@
     </head>
     <body>
         <div class="container">
-            <input class="control" type="number" id="resistance1" placeholder="Resistance (Ohms)" style="width:300px; height: 50px;">
+            <input class="control" type="number" id="resistance1" placeholder="Resistance A (Ohms)" style="width:300px; height: 50px;">
             <select class="control" id="resistanceUnit1" style="width:300px; height: 50px;">
                 <option value="1">Ohms</option>
                 <option value="1000">kOhm</option>
                 <option value="1000000">MOhm</option>
                 <option value="1000000000">GOhm</option>
             </select>
-            <input class="control" type="number" id="resistance2" placeholder="Resistance (Ohms)" style="width:300px; height: 50px;">
+            <input class="control" type="number" id="resistance2" placeholder="Resistance B (Ohms)" style="width:300px; height: 50px;">
             <select class="control" id="resistanceUnit2" style="width:300px; height: 50px;">
                 <option value="1">Ohms</option>
                 <option value="1000">kOhm</option>
@@ -36,32 +53,175 @@
         <p id="result"></p>
         <script>
             const resistanceInput1 = document.getElementById('resistance1');
-            resistanceInput.addEventListener('input', function() {
-                calculatePeriod();
+            resistanceInput1.addEventListener('input', function() {
+                updateDisplay();
             });
             const resistanceInput2 = document.getElementById('resistance2');
-            resistanceInput.addEventListener('input', function() {
-                calculatePeriod();
+            resistanceInput2.addEventListener('input', function() {
+                updateDisplay();
             });
             const capacitanceInput = document.getElementById('capacitance');
             capacitanceInput.addEventListener('input', function() {
-                calculatePeriod();
+                updateDisplay();
             });
             const resistanceUnitSelect1 = document.getElementById('resistanceUnit1');
-            resistanceUnitSelect.addEventListener('change', function() {
-                calculatePeriod();
+            resistanceUnitSelect1.addEventListener('change', function() {
+                updateDisplay();
+                calculateFrequency();
             });
             const resistanceUnitSelect2 = document.getElementById('resistanceUnit2');
-            resistanceUnitSelect.addEventListener('change', function() {
-                calculatePeriod();
+            resistanceUnitSelect2.addEventListener('change', function() {
+                updateDisplay();
+                calculateFrequency();
             });
             const capacitanceUnitSelect = document.getElementById('capacitanceUnit');
             capacitanceUnitSelect.addEventListener('change', function() {
-                calculatePeriod();
+                updateDisplay();
+                calculateFrequency();
             });
             const result = document.getElementById('result');
             function calculatePeriod(){
-                return 0.693 * 
+                let displayValue;
+                let unit;
+                let period = 0.693 * (parseFloat(document.getElementById('resistance1').value) * parseFloat(document.getElementById('resistanceUnit1').value) + 2 * parseFloat(document.getElementById('resistance2').value) * parseFloat(document.getElementById('resistanceUnit2').value)) * (parseFloat(document.getElementById('capacitance').value) * parseFloat(document.getElementById('capacitanceUnit').value));
+                if (period >= 1e12) {
+                    displayValue = period / 1e12;
+                    unit = "Teraseconds";
+                } else if (period >= 1e9) {
+                    displayValue = period / 1e9;
+                    unit = "Gigaseconds";
+                } else if (period >= 1e6) {
+                    displayValue = period / 1e6;
+                    unit = "Megaseconds";
+                } else if (period >= 1e3) {
+                    displayValue = period / 1e3;
+                    unit = "Kiloseconds";
+                } else if (period >= 1) {
+                    displayValue = period;
+                    unit = "Seconds";
+                } else if (period >= 1e-3) {
+                    displayValue = period * 1e3;
+                    unit = "Milliseconds";
+                } else if (period >= 1e-6) {
+                    displayValue = period * 1e6;
+                    unit = "Microseconds";
+                } else if (period >= 1e-9) {
+                    displayValue = period * 1e9;
+                    unit = "Nanoseconds";
+                } else if (period >= 1e-12) {
+                    displayValue = period * 1e12;
+                    unit = "Picoseconds";
+                } else {
+                    displayValue = period;
+                    unit = "Seconds";
+                }
+                period = {displayValue, unit};
+                return period;
+            }
+            function calculateFrequency(){
+                let displayValue;
+                let unit;
+                let frequency = 1 / (calculatePeriod().displayValue * {
+                    Teraseconds: 1e12,
+                    Gigaseconds: 1e9,
+                    Megaseconds: 1e6,
+                    Kiloseconds: 1e3,
+                    Seconds: 1,
+                    Milliseconds: 1e-3,
+                    Microseconds: 1e-6,
+                    Nanoseconds: 1e-9,
+                    Picoseconds: 1e-12
+                }[calculatePeriod().unit]);
+                if (frequency >= 1e12) {
+                    displayValue = frequency / 1e12;
+                    unit = "THz";
+                } else if (frequency >= 1e9) {
+                    displayValue = frequency / 1e9;
+                    unit = "GHz";
+                } else if (frequency >= 1e6) {
+                    displayValue = frequency / 1e6;
+                    unit = "MHz";
+                } else if (frequency >= 1e3) {
+                    displayValue = frequency / 1e3;
+                    unit = "kHz";
+                } else if (frequency >= 1) {
+                    displayValue = frequency;
+                    unit = "Hz";
+                } else if (frequency >= 1e-3) {
+                    displayValue = frequency * 1e3;
+                    unit = "mHz";
+                } else if (frequency >= 1e-6) {
+                    displayValue = frequency * 1e6;
+                    unit = "µHz";
+                } else if (frequency >= 1e-9) {
+                    displayValue = frequency * 1e9;
+                    unit = "nHz";
+                } else if (frequency >= 1e-12) {
+                    displayValue = frequency * 1e12;
+                    unit = "pHz";
+                } else {
+                    displayValue = frequency;
+                    unit = "Hz";
+                }
+                return {displayValue, unit};
+            }
+            function calculateDutyCycle() {
+                let resistance1 = parseFloat(document.getElementById('resistance1').value) * parseFloat(document.getElementById('resistanceUnit1').value);
+                let resistance2 = parseFloat(document.getElementById('resistance2').value) * parseFloat(document.getElementById('resistanceUnit2').value);
+                let dutyCycle = (resistance1 + resistance2) / (resistance1 + 2 * resistance2) * 100;
+                return dutyCycle;
+            }
+            function calculateTimeHigh() {
+                let timeHigh = calculateDutyCycle() / 100 * (calculatePeriod().displayValue * {
+                    Teraseconds: 1e12,
+                    Gigaseconds: 1e9,
+                    Megaseconds: 1e6,
+                    Kiloseconds: 1e3,
+                    Seconds: 1,
+                    Milliseconds: 1e-3,
+                    Microseconds: 1e-6,
+                    Nanoseconds: 1e-9,
+                    Picoseconds: 1e-12
+                }[calculatePeriod().unit]);
+                if (timeHigh >= 1e12) {
+                    displayValue = timeHigh / 1e12;
+                    unit = "THz";
+                } else if (timeHigh >= 1e9) {
+                    displayValue = timeHigh / 1e9;
+                    unit = "GHz";
+                } else if (timeHigh >= 1e6) {
+                    displayValue = timeHigh / 1e6;
+                    unit = "MHz";
+                } else if (timeHigh >= 1e3) {
+                    displayValue = timeHigh / 1e3;
+                    unit = "kHz";
+                } else if (timeHigh >= 1) {
+                    displayValue = timeHigh;
+                    unit = "Seconds";
+                } else if (timeHigh >= 1e-3) {
+                    displayValue = timeHigh * 1e3;
+                    unit = "mHz";
+                } else if (timeHigh >= 1e-6) {
+                    displayValue = timeHigh * 1e6;
+                    unit = "µHz";
+                } else if (timeHigh >= 1e-9) {
+                    displayValue = timeHigh * 1e9;
+                    unit = "nHz";
+                } else if (timeHigh >= 1e-12) {
+                    displayValue = timeHigh * 1e12;
+                    unit = "Picoseconds";
+                } else {
+                    displayValue = timeHigh;
+                    unit = "Seconds";
+                }
+                return {displayValue, unit};
+            }
+            function updateDisplay() {
+                const period = calculatePeriod();
+                const frequency = calculateFrequency();
+                const dutyCycle = calculateDutyCycle();
+                const timeHigh = calculateTimeHigh();
+                result.innerText = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit} \nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit} \nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}% \nTime High: ${parseFloat(timeHigh.toFixed(7))} ${timeHigh.unit}`;
             }
         </script>
     </body>
