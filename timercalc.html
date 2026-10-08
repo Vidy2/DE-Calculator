@@ -219,7 +219,7 @@
                 const frequency = calculateFrequency();
                 const dutyCycle = calculateDutyCycle();
                 const timeHigh = calculateTimeHigh();
-                result.innerText = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit} \nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit} \nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}% \nTime High: ${parseFloat(timeHigh.toFixed(7))} ${timeHigh.unit}`;
+                result.textContent = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit} \nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit} \nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}% \nTime High: ${parseFloat(timeHigh.toFixed(7))} ${timeHigh.unit}`;
             }
         </script>
     </body>
