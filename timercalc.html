@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="./calc.png">
+        <style>
+            body {
+                background-image: linear-gradient(45deg, lightgreen 10%, lightblue 90%);
+            }
+        </style>
+        <title>555 Timer Calculator</title>
+    </head>
+    <body>
+        <div class="container">
+            <input class="control" type="number" id="resistance1" placeholder="Resistance (Ohms)" style="width:300px; height: 50px;">
+            <select class="control" id="resistanceUnit1" style="width:300px; height: 50px;">
+                <option value="1">Ohms</option>
+                <option value="1000">kOhm</option>
+                <option value="1000000">MOhm</option>
+                <option value="1000000000">GOhm</option>
+            </select>
+            <input class="control" type="number" id="resistance2" placeholder="Resistance (Ohms)" style="width:300px; height: 50px;">
+            <select class="control" id="resistanceUnit2" style="width:300px; height: 50px;">
+                <option value="1">Ohms</option>
+                <option value="1000">kOhm</option>
+                <option value="1000000">MOhm</option>
+                <option value="1000000000">GOhm</option>
+            </select>
+            <input class="control" type="number" id="capacitance" placeholder="Capacitance" style="width:300px; height: 50px;">
+            <select class="control" id="capacitanceUnit" style="width:300px; height: 50px;">
+                <option value="1">F</option>
+                <option value="0.001">mF</option>
+                <option value="0.000001">μF</option>
+                <option value="0.000000001">nF</option>
+                <option value="0.000000000001">pF</option>
+            </select>
+        </div>
+        <p id="result"></p>
+        <script>
+            const resistanceInput1 = document.getElementById('resistance1');
+            resistanceInput.addEventListener('input', function() {
+                calculatePeriod();
+            });
+            const resistanceInput2 = document.getElementById('resistance2');
+            resistanceInput.addEventListener('input', function() {
+                calculatePeriod();
+            });
+            const capacitanceInput = document.getElementById('capacitance');
+            capacitanceInput.addEventListener('input', function() {
+                calculatePeriod();
+            });
+            const resistanceUnitSelect1 = document.getElementById('resistanceUnit1');
+            resistanceUnitSelect.addEventListener('change', function() {
+                calculatePeriod();
+            });
+            const resistanceUnitSelect2 = document.getElementById('resistanceUnit2');
+            resistanceUnitSelect.addEventListener('change', function() {
+                calculatePeriod();
+            });
+            const capacitanceUnitSelect = document.getElementById('capacitanceUnit');
+            capacitanceUnitSelect.addEventListener('change', function() {
+                calculatePeriod();
+            });
+            const result = document.getElementById('result');
+            function calculatePeriod(){
+                return 0.693 * 
+            }
+        </script>
+    </body>
+</html>
