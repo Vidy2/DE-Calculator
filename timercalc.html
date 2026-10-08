@@ -17,6 +17,7 @@
                 margin-top: 20px;
                 font-size: 18px;
                 text-align: center;
+                white-space: pre-wrap;
             }
 
             body {
@@ -214,12 +215,77 @@
                 }
                 return {displayValue, unit};
             }
+            function calculateTimeLow() {
+                let displayValue;
+                let unit;
+                let timeLow = (calculatePeriod().displayValue * {
+                    Teraseconds: 1e12,
+                    Gigaseconds: 1e9,
+                    Megaseconds: 1e6,
+                    Kiloseconds: 1e3,
+                    Seconds: 1,
+                    Milliseconds: 1e-3,
+                    Microseconds: 1e-6,
+                    Nanoseconds: 1e-9,
+                    Picoseconds: 1e-12
+                }[calculatePeriod().unit]) - (calculateTimeHigh().displayValue * {
+                    Teraseconds: 1e12,
+                    Gigaseconds: 1e9,
+                    Megaseconds: 1e6,
+                    Kiloseconds: 1e3,
+                    Seconds: 1,
+                    Milliseconds: 1e-3,
+                    Microseconds: 1e-6,
+                    Nanoseconds: 1e-9,
+                    Picoseconds: 1e-12
+                }[calculateTimeHigh().unit]);
+                if (timeLow >= 1e12) {
+                    displayValue = timeLow / 1e12;
+                    unit = "THz";
+                } else if (timeLow >= 1e9) {
+                    displayValue = timeLow / 1e9;
+                    unit = "GHz";
+                } else if (timeLow >= 1e6) {
+                    displayValue = timeLow / 1e6;
+                    unit = "MHz";
+                } else if (timeLow >= 1e3) {
+                    displayValue = timeLow / 1e3;
+                    unit = "kHz";
+                } else if (timeLow >= 1) {
+                    displayValue = timeLow;
+                    unit = "Seconds";
+                } else if (timeLow >= 1e-3) {
+                    displayValue = timeLow * 1e3;
+                    unit = "mHz";
+                } else if (timeLow >= 1e-6) {
+                    displayValue = timeLow * 1e6;
+                    unit = "µHz";
+                } else if (timeLow >= 1e-9) {
+                    displayValue = timeLow * 1e9;
+                    unit = "nHz";
+                } else if (timeLow >= 1e-12) {
+                    displayValue = timeLow * 1e12;
+                    unit = "Picoseconds";
+                } else {
+                    displayValue = timeLow;
+                    unit = "Seconds";
+                }
+                return {displayValue, unit};
+            }
             function updateDisplay() {
+                const r1 = parseFloat(resistanceInput1.value);
+                const r2 = parseFloat(resistanceInput2.value);
+                const c = parseFloat(capacitanceInput.value);
+                if (isNaN(r1) || isNaN(r2) || isNaN(c)) {
+                    result.textContent = "Enter all values";
+                    return;
+                }
                 const period = calculatePeriod();
                 const frequency = calculateFrequency();
                 const dutyCycle = calculateDutyCycle();
                 const timeHigh = calculateTimeHigh();
-                result.textContent = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit} \nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit} \nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}% \nTime High: ${parseFloat(timeHigh.toFixed(7))} ${timeHigh.unit}`;
+                const timeLow = calculateTimeLow();
+                result.textContent = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit}\nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit}\nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}%\nTime High: ${parseFloat(timeHigh.displayValue.toFixed(7))} ${timeHigh.unit}\nTime Low: ${parseFloat(timeLow.displayValue.toFixed(7))} ${timeLow.unit}\n`;
             }
         </script>
     </body>
