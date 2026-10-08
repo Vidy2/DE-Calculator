@@ -172,6 +172,8 @@
                 return dutyCycle;
             }
             function calculateTimeHigh() {
+                let displayValue;
+                let unit;
                 let timeHigh = calculateDutyCycle() / 100 * (calculatePeriod().displayValue * {
                     Teraseconds: 1e12,
                     Gigaseconds: 1e9,
