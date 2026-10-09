@@ -27,7 +27,15 @@
         <title>555 Timer Calculator</title>
     </head>
     <body>
-        <div class="container">
+        <select class = "control"id="calculationType" style="width:300px; height: 50px;" onchange="toggleDisplay(this.value)">
+            <option value = "withResistanceContainer">
+                Solve with Resistance
+            </option>
+            <option value = "forResistanceContainer">
+                Solve for Resistance
+            </option>
+        </select>
+        <div class="container" id ="withResistanceContainer">
             <input class="control" type="number" id="resistance1" placeholder="Resistance A (Ohms)" style="width:300px; height: 50px;">
             <select class="control" id="resistanceUnit1" style="width:300px; height: 50px;">
                 <option value="1">Ohms</option>
@@ -50,9 +58,43 @@
                 <option value="0.000000001">nF</option>
                 <option value="0.000000000001">pF</option>
             </select>
-            <p id="result"></p>
         </div>
+        <div class="container" id="forResistanceContainer" style="display: none;">
+            <input class ="control" type ="number" id = "frequency" placeholder = "Frequency" style="width:300px; height: 50px;">
+            <select class="control" id="frequencyUnit" style="width:300px; height: 50px;">
+                <option value="0.000000000001">pHz</option>
+                <option value="0.000000001">nHz</option>
+                <option value="0.000001">μHz</option>
+                <option value="0.001">mHz</option>
+                <option value="1" selected>Hz</option>
+                <option value="1000">kHz</option>
+                <option value="1000000">MHz</option>
+                <option value="1000000000">GHz</option>
+            </select>
+            <input class = "control" type = "number" id = "dutyCycle" placeholder = "Duty Cycle" style="width:300px; height: 50px;">
+            <input class = "control" type = "number" id = "capacitance2" placeholder = "Capacitance" style="width:300px; height: 50px;">
+            <select class="control" id="capacitanceUnit2" style="width:300px; height: 50px;">
+                <option value="1">F</option>
+                <option value="0.001">mF</option>
+                <option value="0.000001">μF</option>
+                <option value="0.000000001">nF</option>
+                <option value="0.000000000001">pF</option>
+            </select>
+        </div>
+        <p id="result"></p>
         <script>
+            const capacitanceInput2 = document.getElementById('capacitance2');
+            capacitanceInput2.addEventListener('input', function() {
+                updateDisplay();
+            });
+            const frequencyInput = document.getElementById('frequency');
+            frequencyInput.addEventListener('input', function() {
+                updateDisplay();
+            });
+            const dutyCycleInput = document.getElementById('dutyCycle');
+            dutyCycleInput.addEventListener('input', function() {
+                updateDisplay();
+            });
             const resistanceInput1 = document.getElementById('resistance1');
             resistanceInput1.addEventListener('input', function() {
                 updateDisplay();
@@ -78,6 +120,50 @@
                 updateDisplay();
             });
             const result = document.getElementById('result');
+            function toggleDisplay(selectedValue) {
+                document.getElementById('withResistanceContainer').style.display = 'none';
+                document.getElementById('forResistanceContainer').style.display = 'none';
+                if (selectedValue) {
+                    document.getElementById(selectedValue).style.display = 'block';
+                }
+                result.textContent = "";
+            }
+            function calculateResistance() {
+                let frequency = parseFloat(document.getElementById('frequency').value) * parseFloat(document.getElementById('frequencyUnit').value);
+                let dutyCycle = parseFloat(document.getElementById('dutyCycle').value) / 100;
+                let capacitance = parseFloat(document.getElementById('capacitance2').value) * parseFloat(document.getElementById('capacitanceUnit2').value);
+                let period = 1 / frequency;
+                let ra = (2 * dutyCycle - 1) / (0.693 * capacitance * frequency);
+                let rb = (1 - dutyCycle) / (0.693 * capacitance * frequency);
+                return {
+                    ra,
+                    rb,
+                    raDisplay: formatResistance(ra),
+                    rbDisplay: formatResistance(rb)
+                };
+            }
+            function formatResistance(resistance) {
+                let displayValue;
+                let unit;
+
+                let absResistance = Math.abs(resistance);
+
+                if (absResistance >= 1e9) {
+                    displayValue = resistance / 1e9;
+                    unit = "GΩ";
+                } else if (absResistance >= 1e6) {
+                    displayValue = resistance / 1e6;
+                    unit = "MΩ";
+                } else if (absResistance >= 1e3) {
+                    displayValue = resistance / 1e3;
+                    unit = "kΩ";
+                } else {
+                    displayValue = resistance;
+                    unit = "Ω";
+                }
+
+                return { displayValue, unit };
+            }
             function calculatePeriod(){
                 let displayValue;
                 let unit;
@@ -273,19 +359,31 @@
                 return {displayValue, unit};
             }
             function updateDisplay() {
-                const r1 = parseFloat(resistanceInput1.value);
-                const r2 = parseFloat(resistanceInput2.value);
-                const c = parseFloat(capacitanceInput.value);
-                if (isNaN(r1) || isNaN(r2) || isNaN(c)) {
-                    result.textContent = "Enter all values";
-                    return;
+                if (document.getElementById("calculationType").value === "withResistanceContainer") {
+                    const r1 = parseFloat(resistanceInput1.value);
+                    const r2 = parseFloat(resistanceInput2.value);
+                    const c = parseFloat(capacitanceInput.value);
+                    if (isNaN(r1) || isNaN(r2) || isNaN(c)) {
+                        result.textContent = "Enter all values";
+                        return;
+                    }
+                    const period = calculatePeriod();
+                    const frequency = calculateFrequency();
+                    const dutyCycle = calculateDutyCycle();
+                    const timeHigh = calculateTimeHigh();
+                    const timeLow = calculateTimeLow();
+                    result.textContent = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit}\nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit}\nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}%\nTime High: ${parseFloat(timeHigh.displayValue.toFixed(7))} ${timeHigh.unit}\nTime Low: ${parseFloat(timeLow.displayValue.toFixed(7))} ${timeLow.unit}\n`;
+                } else {
+                    const frequency = parseFloat(frequencyInput.value);
+                    const dutyCycle = parseFloat(dutyCycleInput.value);
+                    const capacitance = parseFloat(capacitanceInput2.value);
+                    if (isNaN(frequency) || isNaN(dutyCycle) || isNaN(capacitance)) {
+                        result.textContent = "Enter all values";
+                        return;
+                    }
+                    const resistances = calculateResistance();
+                    result.textContent = `Resistance A: ${parseFloat(resistances.raDisplay.displayValue.toFixed(7))} ${resistances.raDisplay.unit}\nResistance B: ${parseFloat(resistances.rbDisplay.displayValue.toFixed(7))} ${resistances.rbDisplay.unit}\n`;
                 }
-                const period = calculatePeriod();
-                const frequency = calculateFrequency();
-                const dutyCycle = calculateDutyCycle();
-                const timeHigh = calculateTimeHigh();
-                const timeLow = calculateTimeLow();
-                result.textContent = `Period: ${parseFloat(period.displayValue.toFixed(7))} ${period.unit}\nFrequency: ${parseFloat(frequency.displayValue.toFixed(7))} ${frequency.unit}\nDuty Cycle: ${parseFloat(dutyCycle.toFixed(7))}%\nTime High: ${parseFloat(timeHigh.displayValue.toFixed(7))} ${timeHigh.unit}\nTime Low: ${parseFloat(timeLow.displayValue.toFixed(7))} ${timeLow.unit}\n`;
             }
         </script>
     </body>
