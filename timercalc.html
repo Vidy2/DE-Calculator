@@ -20,68 +20,87 @@
                 white-space: pre-wrap;
             }
 
+            #fullPage {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
             body {
                 background-image: linear-gradient(45deg, lightgreen 10%, lightblue 90%);
+            }
+
+            .input-wrapper::after {
+                content: attr(data-suffix); 
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
             }
         </style>
         <title>555 Timer Calculator</title>
     </head>
     <body>
-        <select class = "control"id="calculationType" style="width:300px; height: 50px;" onchange="toggleDisplay(this.value)">
-            <option value = "withResistanceContainer">
-                Solve with Resistance
-            </option>
-            <option value = "forResistanceContainer">
-                Solve for Resistance
-            </option>
-        </select>
-        <div class="container" id ="withResistanceContainer">
-            <input class="control" type="number" id="resistance1" placeholder="Resistance A (Ohms)" style="width:300px; height: 50px;">
-            <select class="control" id="resistanceUnit1" style="width:300px; height: 50px;">
-                <option value="1">Ohms</option>
-                <option value="1000">kOhm</option>
-                <option value="1000000">MOhm</option>
-                <option value="1000000000">GOhm</option>
+        <div id ="fullPage">
+            <select class = "control"id="calculationType" style="width:300px; height: 50px; margin-bottom: 1rem;" onchange="toggleDisplay(this.value)">
+                <option value = "withResistanceContainer">
+                    Solve with Resistance
+                </option>
+                <option value = "forResistanceContainer">
+                    Solve for Resistance
+                </option>
             </select>
-            <input class="control" type="number" id="resistance2" placeholder="Resistance B (Ohms)" style="width:300px; height: 50px;">
-            <select class="control" id="resistanceUnit2" style="width:300px; height: 50px;">
-                <option value="1">Ohms</option>
-                <option value="1000">kOhm</option>
-                <option value="1000000">MOhm</option>
-                <option value="1000000000">GOhm</option>
-            </select>
-            <input class="control" type="number" id="capacitance" placeholder="Capacitance" style="width:300px; height: 50px;">
-            <select class="control" id="capacitanceUnit" style="width:300px; height: 50px;">
-                <option value="1">F</option>
-                <option value="0.001">mF</option>
-                <option value="0.000001">μF</option>
-                <option value="0.000000001">nF</option>
-                <option value="0.000000000001">pF</option>
-            </select>
+            <div class="container" id ="withResistanceContainer">
+                <input class="control" type="number" id="resistance1" placeholder="Resistance A (Ohms)" style="width:300px; height: 50px;">
+                <select class="control" id="resistanceUnit1" style="width:300px; height: 50px;">
+                    <option value="1">Ohms</option>
+                    <option value="1000">kOhm</option>
+                    <option value="1000000">MOhm</option>
+                    <option value="1000000000">GOhm</option>
+                </select>
+                <input class="control" type="number" id="resistance2" placeholder="Resistance B (Ohms)" style="width:300px; height: 50px;">
+                <select class="control" id="resistanceUnit2" style="width:300px; height: 50px;">
+                    <option value="1">Ohms</option>
+                    <option value="1000">kOhm</option>
+                    <option value="1000000">MOhm</option>
+                    <option value="1000000000">GOhm</option>
+                </select>
+                <input class="control" type="number" id="capacitance" placeholder="Capacitance" style="width:300px; height: 50px;">
+                <select class="control" id="capacitanceUnit" style="width:300px; height: 50px;">
+                    <option value="1">F</option>
+                    <option value="0.001">mF</option>
+                    <option value="0.000001">μF</option>
+                    <option value="0.000000001">nF</option>
+                    <option value="0.000000000001">pF</option>
+                </select>
+            </div>
+            <div class="container" id="forResistanceContainer" style="display: none;">
+                <input class ="control" type ="number" id = "frequency" placeholder = "Frequency" style="width:300px; height: 50px;">
+                <select class="control" id="frequencyUnit" style="width:300px; height: 50px;">
+                    <option value="0.000000000001">pHz</option>
+                    <option value="0.000000001">nHz</option>
+                    <option value="0.000001">μHz</option>
+                    <option value="0.001">mHz</option>
+                    <option value="1" selected>Hz</option>
+                    <option value="1000">kHz</option>
+                    <option value="1000000">MHz</option>
+                    <option value="1000000000">GHz</option>
+                </select>
+                <div class = "input-wrapper" data-suffix = "%" style="position: relative; display: inline-block;">
+                    <input contenteditable = "true" class = "control" type = "number" id = "dutyCycle" placeholder = "Duty Cycle" style="width:300px; height: 50px;">
+                </div>
+                <input class = "control" type = "number" id = "capacitance2" placeholder = "Capacitance" style="width:300px; height: 50px;">
+                <select class="control" id="capacitanceUnit2" style="width:300px; height: 50px;">
+                    <option value="1">F</option>
+                    <option value="0.001">mF</option>
+                    <option value="0.000001">μF</option>
+                    <option value="0.000000001">nF</option>
+                    <option value="0.000000000001">pF</option>
+                </select>
+            </div>
+            <p id="result"></p>
         </div>
-        <div class="container" id="forResistanceContainer" style="display: none;">
-            <input class ="control" type ="number" id = "frequency" placeholder = "Frequency" style="width:300px; height: 50px;">
-            <select class="control" id="frequencyUnit" style="width:300px; height: 50px;">
-                <option value="0.000000000001">pHz</option>
-                <option value="0.000000001">nHz</option>
-                <option value="0.000001">μHz</option>
-                <option value="0.001">mHz</option>
-                <option value="1" selected>Hz</option>
-                <option value="1000">kHz</option>
-                <option value="1000000">MHz</option>
-                <option value="1000000000">GHz</option>
-            </select>
-            <input class = "control" type = "number" id = "dutyCycle" placeholder = "Duty Cycle" style="width:300px; height: 50px;">
-            <input class = "control" type = "number" id = "capacitance2" placeholder = "Capacitance" style="width:300px; height: 50px;">
-            <select class="control" id="capacitanceUnit2" style="width:300px; height: 50px;">
-                <option value="1">F</option>
-                <option value="0.001">mF</option>
-                <option value="0.000001">μF</option>
-                <option value="0.000000001">nF</option>
-                <option value="0.000000000001">pF</option>
-            </select>
-        </div>
-        <p id="result"></p>
         <script>
             const capacitanceInput2 = document.getElementById('capacitance2');
             capacitanceInput2.addEventListener('input', function() {
