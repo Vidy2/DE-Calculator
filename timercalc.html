@@ -98,6 +98,13 @@
                     <option value="0.000000001">nF</option>
                     <option value="0.000000000001">pF</option>
                 </select>
+                <input class = "control" type = "number" id = "resistance3" placeholder="Resistance" style="width:300px; height:50px;">
+                <select class="control" id="resistanceUnit3" style="width:300px; height: 50px;">
+                    <option value="1">Ohms</option>
+                    <option value="1000">kOhm</option>
+                    <option value="1000000">MOhm</option>
+                    <option value="1000000000">GOhm</option>
+                </select>
             </div>
             <p id="result"></p>
         </div>
@@ -122,6 +129,10 @@
             resistanceInput2.addEventListener('input', function() {
                 updateDisplay();
             });
+            const resistanceInput3 = document.getElementById("resistance3");
+            resistanceInput3.addEventListener('input', function() {
+                updateDisplay();
+            });
             const capacitanceInput = document.getElementById('capacitance');
             capacitanceInput.addEventListener('input', function() {
                 updateDisplay();
@@ -132,6 +143,10 @@
             });
             const resistanceUnitSelect2 = document.getElementById('resistanceUnit2');
             resistanceUnitSelect2.addEventListener('change', function() {
+                updateDisplay();
+            });
+            const resistanceUnitSelect3 = document.getElementById('resistanceUnit3');
+            resistanceUnitSelect3.addEventListener('change', function() {
                 updateDisplay();
             });
             const capacitanceUnitSelect = document.getElementById('capacitanceUnit');
@@ -154,6 +169,19 @@
                 let period = 1 / frequency;
                 let ra = (2 * dutyCycle - 1) / (0.693 * capacitance * frequency);
                 let rb = (1 - dutyCycle) / (0.693 * capacitance * frequency);
+                return {
+                    ra,
+                    rb,
+                    raDisplay: formatResistance(ra),
+                    rbDisplay: formatResistance(rb)
+                };
+            }
+            function calculateResistance2() {
+                let frequency = parseFloat(document.getElementById('frequency').value) * parseFloat(document.getElementById('frequencyUnit').value);
+                let capacitance = parseFloat(document.getElementById('capacitance2').value) * parseFloat(document.getElementById('capacitanceUnit2').value);
+                let ra = parseFloat(document.getElementById("resistance3").value) * parseFloat(document.getElementById("resistanceUnit3").value);
+                let period = 1 / frequency;
+                let rb = (period / (0.693 * capacitance) - ra) / 2;
                 return {
                     ra,
                     rb,
@@ -396,12 +424,18 @@
                     const frequency = parseFloat(frequencyInput.value);
                     const dutyCycle = parseFloat(dutyCycleInput.value);
                     const capacitance = parseFloat(capacitanceInput2.value);
+                    const resistance1 = parseFloat(resistanceInput3.value);
                     if (isNaN(frequency) || isNaN(dutyCycle) || isNaN(capacitance)) {
                         result.textContent = "Enter all values";
                         return;
                     }
-                    const resistances = calculateResistance();
-                    result.textContent = `Resistance A: ${parseFloat(resistances.raDisplay.displayValue.toFixed(7))} ${resistances.raDisplay.unit}\nResistance B: ${parseFloat(resistances.rbDisplay.displayValue.toFixed(7))} ${resistances.rbDisplay.unit}\n`;
+                    if (!isNaN(resistance1)){
+                        const resistances = calculateResistance2();
+                        result.textContent = `Resistance A: ${parseFloat(resistances.raDisplay.displayValue.toFixed(7))} ${resistances.raDisplay.unit}\nResistance B: ${parseFloat(resistances.rbDisplay.displayValue.toFixed(7))} ${resistances.rbDisplay.unit}\n`;
+                    } else {
+                        const resistances = calculateResistance();
+                        result.textContent = `Resistance A: ${parseFloat(resistances.raDisplay.displayValue.toFixed(7))} ${resistances.raDisplay.unit}\nResistance B: ${parseFloat(resistances.rbDisplay.displayValue.toFixed(7))} ${resistances.rbDisplay.unit}\n`;
+                    }
                 }
             }
         </script>
