@@ -97,7 +97,7 @@
                 let bin = "";
                 let currentNumber = decimalInput.value;
 
-                for (let i = 12; i >= 0; i--) {
+                for (let i = 32; i >= 0; i--) {
                     if (currentNumber >= Math.pow(2, i)) {
                         bin += "1";
                         currentNumber -= Math.pow(2, i);
