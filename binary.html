@@ -9,6 +9,12 @@
                 margin: 0 auto;
             }
 
+            #fullPage {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
             .control {
                 background-image: linear-gradient(45deg, lightblue 10%, lightgreen 90%);
             }
@@ -25,26 +31,83 @@
         </style>
         <title>Binary Calculator</title>
     </head>
+
     <body>
-        <div class="container">
-            <input class="control" type="text" id="binary" placeholder="Binary" style="width:300px; height: 50px;">
+        <div id = fullPage>
+            <select class = "control"id="calculationType" style="width:300px; height: 50px; margin-bottom: 1rem;" onchange="toggleDisplay(this.value)">
+                <option value = "forDecimal">
+                    Binary to decimal
+                </option>
+
+                <option value = "forBinary">
+                    Decimal to binary
+                </option>
+            </select>
+
+            <div class="container" id = "forDecimal">
+                <input class="control" type="text" id="binary" placeholder="Binary Number" style="width:300px; height: 50px;">
+            </div>
+
+            <div class="container" id = "forBinary" style = "display: none;">
+                <input class="control" type="text" id="decimal" placeholder="Decimal Number" style="width:300px; height: 50px;">
+            </div>
         </div>
+        
         <p id="result"></p>
+
         <script>
+            const calculationType = document.getElementById("calculationType");
             const binaryInput = document.getElementById("binary");
             binaryInput.addEventListener('input', function() {
                 binaryCalculate();
             });
+
+            const decimalInput = document.getElementById("decimal");
+            decimalInput.addEventListener('input', function() {
+                decimalCalculate();
+            });
+
             const result = document.getElementById("result");
+            
+            function toggleDisplay(selectedValue) {
+                document.getElementById('forBinary').style.display = 'none';
+                document.getElementById('forDecimal').style.display = 'none';
+
+                if (selectedValue) {
+                    document.getElementById(selectedValue).style.display = 'block';
+                }
+
+                result.textContent = "";
+            }
+
             function binaryCalculate() {
                 let binaryList = (binaryInput.value).split("");
                 let sum = 0;
+
                 for (let i = binaryList.length - 1; i >= 0; i--) {
                     if (binaryList[i] === "1") { 
                         sum += Math.pow(2, (binaryList.length - 1 - i));
                     }
                 }
+
                 result.textContent = `The decimal number is ${sum}`;
+            }
+
+            function decimalCalculate() {
+                let bin = "";
+                let currentNumber = decimalInput.value;
+
+                for (let i = 12; i >= 0; i--) {
+                    if (currentNumber >= Math.pow(2, i)) {
+                        bin += "1";
+                        currentNumber -= Math.pow(2, i);
+                    } else {
+                        bin += "0";
+                    }
+                }
+                
+                bin = bin.replace(/^0+/, '');
+                result.textContent = `The binary number is ${bin}`;
             }
 
         </script>
