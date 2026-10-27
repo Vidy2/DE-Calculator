@@ -42,6 +42,10 @@
                 <option value = "forBinary">
                     Decimal to binary
                 </option>
+
+                <option value = "DToO">
+                    Decimal to octal
+                </option>
             </select>
 
             <div class="container" id = "forDecimal">
@@ -50,6 +54,10 @@
 
             <div class="container" id = "forBinary" style = "display: none;">
                 <input class="control" type="text" id="decimal" placeholder="Decimal Number" style="width:300px; height: 50px;">
+            </div>
+
+            <div class="container" id = "DToO" style = "display: none;">
+                <input class="control" type="text" id="decimalO" placeholder="Decimal Number" style="width:300px; height: 50px;">
             </div>
         </div>
         
@@ -67,6 +75,11 @@
                 decimalCalculate();
             });
 
+            const decimalOInput = document.getElementById("decimalO");
+            decimalOInput.addEventListener('input', function() {
+                dOctalCalculate();
+            });
+
             const result = document.getElementById("result");
             
             function toggleDisplay(selectedValue) {
@@ -78,6 +91,18 @@
                 }
 
                 result.textContent = "";
+            }
+
+            function dOctalCalculate() {
+                let currentNumber = decimalOInput.value;
+                let answer = "";
+                while (true) {
+                    answer = (currentNumber % 8).toString() + answer;
+                    currentNumber = Math.floor(currentNumber / 8);
+                    if (currentNumber < 8) {
+                        break;
+                    }
+                }
             }
 
             function binaryCalculate() {
