@@ -46,6 +46,18 @@
                 <option value = "DToO">
                     Decimal to octal
                 </option>
+
+                <option value = "OToD">
+                    Octal to decimal
+                </option>
+
+                <option value = "DToH">
+                    Decimal to hexidecimal
+                </option>
+
+                <option value = "HToD">
+                    Hexidecimal to decimal
+                </option>
             </select>
 
             <div class="container" id = "forDecimal">
@@ -58,6 +70,18 @@
 
             <div class="container" id = "DToO" style = "display: none;">
                 <input class="control" type="text" id="decimalO" placeholder="Decimal Number" style="width:300px; height: 50px;">
+            </div>
+
+            <div class="container" id = "OToD" style = "display: none;">
+                <input class="control" type="text" id="octalD" placeholder="Octal Number" style="width:300px; height: 50px;">
+            </div>
+
+            <div class="container" id = "DToH" style = "display: none;">
+                <input class="control" type="text" id="decimalH" placeholder="Decimal Number" style="width:300px; height: 50px;">
+            </div>
+
+            <div class="container" id = "HToD" style = "display: none;">
+                <input class="control" type="text" id="hexD" placeholder="Hexidecimal Number" style="width:300px; height: 50px;">
             </div>
         </div>
         
@@ -80,11 +104,30 @@
                 dOctalCalculate();
             });
 
+            const octalDInput = document.getElementById("octalD");
+            octalDInput.addEventListener('input', function() {
+                octalDCalculate();
+            });
+
+            const decimalHInput = document.getElementById("decimalH");
+            decimalHInput.addEventListener('input', function() {
+                dHexCalculate();
+            });
+
+            const hexDInput = document.getElementById("hexD");
+            hexDInput.addEventListener('input', function() {
+                hexDCalculate();
+            });
+
             const result = document.getElementById("result");
             
             function toggleDisplay(selectedValue) {
                 document.getElementById('forBinary').style.display = 'none';
                 document.getElementById('forDecimal').style.display = 'none';
+                document.getElementById('OToD').style.display = 'none';
+                document.getElementById('DToO').style.display = 'none';
+                document.getElementById('HToD').style.display = 'none';
+                document.getElementById('DToH').style.display = 'none';
 
                 if (selectedValue) {
                     document.getElementById(selectedValue).style.display = 'block';
@@ -94,15 +137,19 @@
             }
 
             function dOctalCalculate() {
-                let currentNumber = decimalOInput.value;
-                let answer = "";
-                while (true) {
-                    answer = (currentNumber % 8).toString() + answer;
-                    currentNumber = Math.floor(currentNumber / 8);
-                    if (currentNumber < 8) {
-                        break;
-                    }
-                }
+                result.textContent = `The octal number is ${(parseInt(decimalOInput.value)).toString(8)}`;
+            }
+
+            function octalDCalculate() {             
+                result.textContent = `The decimal number is ${parseInt(octalDInput.value, 8)}`;
+            }
+
+            function dHexCalculate() {
+                result.textContent = `The hexidecimal number is ${(parseInt(decimalHInput.value)).toString(16).toUpperCase()}`;
+            }
+
+            function hexDCalculate() {             
+                result.textContent = `The decimal number is ${parseInt(hexDInput.value, 16)}`;
             }
 
             function binaryCalculate() {
